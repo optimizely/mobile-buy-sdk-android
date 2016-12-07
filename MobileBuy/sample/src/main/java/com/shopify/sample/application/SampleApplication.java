@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.WalletConstants;
+import com.optimizely.ab.android.sdk.OptimizelyManager;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
 import com.shopify.buy.dataprovider.BuyClientError;
@@ -74,6 +75,8 @@ public class SampleApplication extends Application {
 
     private static Customer customer;
 
+    private static OptimizelyManager optimizelyManager;
+
     public static BuyClient getBuyClient() {
         return instance.buyClient;
     }
@@ -83,6 +86,8 @@ public class SampleApplication extends Application {
     }
 
     public static Shop getShop() { return instance.shop; }
+
+    public static OptimizelyManager getOptimizelyManager() { return optimizelyManager; }
 
     public static void setCustomer(Customer customer) {
         SampleApplication.customer = customer;
@@ -107,6 +112,7 @@ public class SampleApplication extends Application {
         instance = this;
 
         initializeBuyClient();
+        initializeOptimizelyManager();
     }
 
     private void initializeBuyClient() {
@@ -155,10 +161,18 @@ public class SampleApplication extends Application {
         });
     }
 
+    private void initializeOptimizelyManager() {
+        optimizelyManager = OptimizelyManager.builder("7947802756")
+                                             .build();
+    }
+
     public void getCollections(final Callback<List<Collection>> callback) {
         buyClient.getCollections(1, callback);
     }
 
+    public String getUser() {
+        return "user2";
+    }
 
     public void getAllProducts(final int page, final List<Product> allProducts, final Callback<List<Product>> callback) {
 

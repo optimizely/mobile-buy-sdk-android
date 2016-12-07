@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.optimizely.ab.android.sdk.OptimizelyClient;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Checkout;
@@ -111,6 +112,8 @@ public class CheckoutActivity extends SampleActivity {
             @Override
             public void success(PaymentToken paymentToken) {
                 onCreditCardStored();
+                OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
+                optimizelyClient.track("checkout", getSampleApplication().getUser());
             }
 
             @Override

@@ -33,7 +33,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import com.optimizely.ab.android.sdk.OptimizelyClient;
+import com.optimizely.ab.android.sdk.OptimizelyStartListener;
+import com.optimizely.ab.config.Variation;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.sample.R;
@@ -44,6 +48,8 @@ import com.shopify.sample.customer.CustomerLoginActivity;
 import com.shopify.sample.customer.CustomerOrderListActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -68,19 +74,40 @@ public class CollectionListActivity extends SampleListActivity {
             isFetching = true;
             showLoadingDialog(R.string.loading_data);
 
-            // Fetch the collections
-            getSampleApplication().getCollections(new Callback<List<Collection>>() {
+            getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
                 @Override
-                public void success(List<Collection> collections) {
-                    isFetching = false;
-                    dismissLoadingDialog();
-                    onFetchedCollections(collections);
-                }
+                public void onStart(OptimizelyClient optimizely) {
+                    if (optimizely.isValid()) {
+                        Toast.makeText(CollectionListActivity.this, "Optimizely Started", Toast.LENGTH_SHORT).show();
 
-                @Override
-                public void failure(BuyClientError error) {
-                    isFetching = false;
-                    onError(error);
+                        final Variation sortingVariation = optimizely.activate("home_sorting_logic", getSampleApplication().getUser());
+
+                        // Fetch the collections
+                        getSampleApplication().getCollections(new Callback<List<Collection>>() {
+                            @Override
+                            public void success(List<Collection> collections) {
+                                if (sortingVariation.getKey().equals("sort_by_name")) {
+                                    Collections.sort(collections, new Comparator<Collection>() {
+                                        @Override
+                                        public int compare(Collection collection, Collection t1) {
+                                            return collection.getTitle().compareToIgnoreCase(t1.getTitle());
+                                        }
+                                    });
+                                }
+                                isFetching = false;
+                                dismissLoadingDialog();
+                                onFetchedCollections(collections);
+                            }
+
+                            @Override
+                            public void failure(BuyClientError error) {
+                                isFetching = false;
+                                onError(error);
+                            }
+                        });
+                    } else {
+                        Toast.makeText(CollectionListActivity.this, "Optimizely Invalid", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
