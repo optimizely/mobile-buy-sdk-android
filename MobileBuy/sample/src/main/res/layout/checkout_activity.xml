@@ -15,6 +15,7 @@
         <Button
             android:id="@+id/native_checkout_button"
             style="@style/Button"
+            android:contentDescription="button_checkout_with_credit_card"
             android:text="@string/native_checkout"/>
     </FrameLayout>
 

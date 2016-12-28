@@ -43,6 +43,7 @@ import com.shopify.buy.dataprovider.Callback;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
 import com.shopify.buy.model.Collection;
+import com.shopify.sample.adapters.CollectionsAdapter;
 import com.shopify.sample.application.SampleApplication;
 import com.shopify.sample.customer.CustomerLoginActivity;
 import com.shopify.sample.customer.CustomerOrderListActivity;
@@ -74,26 +75,34 @@ public class CollectionListActivity extends SampleListActivity {
             isFetching = true;
             showLoadingDialog(R.string.loading_data);
 
+            // Init the shopify client with API KEY passed into the app
+            String shopifyAPIKey = getIntent().getStringExtra("optlyShopifyApiKey");
+            getSampleApplication().initializeBuyClient(shopifyAPIKey);
+
+            // Init the Optimizely manager with params passed into the app
+            String projectId = getIntent().getStringExtra("optlyProjectId");
+            if (projectId == null) {
+                // INSERT PROJECT ID FOR LOCAL RUN
+                projectId = "8087040246";
+            }
+
+            String userId = getIntent().getStringExtra("optlyUserId");
+            if (userId == null) {
+                // INSERT USER ID FOR LOCAL RUN
+                userId = "e2e_test_user_variation_1";
+            }
+            getSampleApplication().initializeOptimizelyManager(projectId, userId);
+
             getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
                 @Override
                 public void onStart(OptimizelyClient optimizely) {
                     if (optimizely.isValid()) {
                         Toast.makeText(CollectionListActivity.this, "Optimizely Started", Toast.LENGTH_SHORT).show();
 
-                        final Variation sortingVariation = optimizely.activate("home_sorting_logic", getSampleApplication().getUser());
-
                         // Fetch the collections
                         getSampleApplication().getCollections(new Callback<List<Collection>>() {
                             @Override
                             public void success(List<Collection> collections) {
-                                if (sortingVariation.getKey().equals("sort_by_name")) {
-                                    Collections.sort(collections, new Comparator<Collection>() {
-                                        @Override
-                                        public int compare(Collection collection, Collection t1) {
-                                            return collection.getTitle().compareToIgnoreCase(t1.getTitle());
-                                        }
-                                    });
-                                }
                                 isFetching = false;
                                 dismissLoadingDialog();
                                 onFetchedCollections(collections);
@@ -172,15 +181,13 @@ public class CollectionListActivity extends SampleListActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                final List<String> collectionTitles = new ArrayList<String>();
+                final ArrayList<Collection> collectionArrayList = new ArrayList<Collection>(collections.size());
+                Collection allProductsCollection = new Collection();
+                collectionArrayList.add(allProductsCollection);
+                collectionArrayList.addAll((collections));
 
-                // Add an 'All Products' collection just in case there are products that do not belong to a collection
-                collectionTitles.add(getString(R.string.all_products));
-                for (Collection collection : collections) {
-                    collectionTitles.add(collection.getTitle());
-                }
+                listView.setAdapter(new CollectionsAdapter(CollectionListActivity.this, collectionArrayList));
 
-                listView.setAdapter(new ArrayAdapter<>(CollectionListActivity.this, R.layout.simple_list_item, collectionTitles));
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

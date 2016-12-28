@@ -77,6 +77,8 @@ public class SampleApplication extends Application {
 
     private static OptimizelyManager optimizelyManager;
 
+    private static String optimizelyUserId;
+
     public static BuyClient getBuyClient() {
         return instance.buyClient;
     }
@@ -110,19 +112,18 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         instance = this;
-
-        initializeBuyClient();
-        initializeOptimizelyManager();
     }
 
-    private void initializeBuyClient() {
+    public void initializeBuyClient(String shopifyAPIKey) {
         String shopUrl = BuildConfig.SHOP_DOMAIN;
         if (TextUtils.isEmpty(shopUrl)) {
             throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must add 'SHOP_DOMAIN' entry in app/shop.properties, in the form '<myshop>.myshopify.com'");
         }
 
-        String shopifyApiKey = BuildConfig.API_KEY;
-        if (TextUtils.isEmpty(shopifyApiKey)) {
+        if (shopifyAPIKey == null) {
+            shopifyAPIKey = BuildConfig.API_KEY;
+        }
+        if (TextUtils.isEmpty(shopifyAPIKey)) {
             throw new IllegalArgumentException(SHOP_PROPERTIES_INSTRUCTION + "You must populate the 'API_KEY' entry in app/shop.properties");
         }
 
@@ -138,10 +139,9 @@ public class SampleApplication extends Application {
         /**
          * Create the BuyClient
          */
-
         buyClient = new BuyClientBuilder()
             .shopDomain(shopUrl)
-            .apiKey(shopifyApiKey)
+            .apiKey(shopifyAPIKey)
             .appId(shopifyAppId)
             .applicationName(applicationName)
             .httpInterceptors(logging)
@@ -161,8 +161,9 @@ public class SampleApplication extends Application {
         });
     }
 
-    private void initializeOptimizelyManager() {
-        optimizelyManager = OptimizelyManager.builder("7947802756")
+    public void initializeOptimizelyManager(String projectId, String userId) {
+        optimizelyUserId = userId;
+        optimizelyManager = OptimizelyManager.builder(projectId)
                                              .build();
     }
 
@@ -171,7 +172,7 @@ public class SampleApplication extends Application {
     }
 
     public String getUser() {
-        return "user2";
+        return optimizelyUserId;
     }
 
     public void getAllProducts(final int page, final List<Product> allProducts, final Callback<List<Product>> callback) {

@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,6 +124,7 @@ public class ShippingRateListActivity extends SampleListActivity {
                 }
 
                 ShippingRate rate = getItem(position);
+                view.findViewById(R.id.llListItemWrapper).setContentDescription(String.format("shipping_rate_list_item_%s", position));
                 ((TextView) view.findViewById(R.id.list_item_left_text)).setText(rate.getTitle());
                 ((TextView) view.findViewById(R.id.list_item_right_text)).setText('$' + rate.getPrice());
 

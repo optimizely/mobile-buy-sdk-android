@@ -42,6 +42,7 @@ import com.shopify.buy.model.Collection;
 import com.shopify.buy.model.Product;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleListActivity;
+import com.shopify.sample.adapters.ProductsAdapter;
 import com.shopify.sample.dialog.HSVColorPickerDialog;
 import com.shopify.sample.ui.ProductDetailsTheme;
 
@@ -126,19 +127,19 @@ public class ProductListActivity extends SampleListActivity {
                 @Override
                 public void success(List<Product> products) {
                     OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
-                    Variation product_sorting_variation = optimizelyClient.activate("targeted_product_sorting_experiment", getSampleApplication().getUser());
-                    if (product_sorting_variation.getKey().equals("sort_by_name")) {
-                        Collections.sort(products, new Comparator<Product>() {
-                            @Override
-                            public int compare(Product product, Product t1) {
-                                return product.getTitle().compareToIgnoreCase(t1.getTitle());
-                            }
-                        });
-                    } else {
+                    Variation product_sorting_variation = optimizelyClient.activate("product_sorting_logic", getSampleApplication().getUser());
+                    if (product_sorting_variation.getKey().equals("sort_by_price")) {
                         Collections.sort(products, new Comparator<Product>() {
                             @Override
                             public int compare(Product product, Product t1) {
                                 return product.getMinimumPrice().compareTo(t1.getMinimumPrice());
+                            }
+                        });
+                    } else if (product_sorting_variation.getKey().equals("sort_by_name")){
+                        Collections.sort(products, new Comparator<Product>() {
+                            @Override
+                            public int compare(Product product, Product t1) {
+                                return product.getTitle().compareToIgnoreCase(t1.getTitle());
                             }
                         });
                     }
@@ -185,18 +186,16 @@ public class ProductListActivity extends SampleListActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                List<String> productTitles = new ArrayList<String>();
-                for (Product product : products) {
-                    productTitles.add(product.getTitle());
-                }
+                ArrayList<Product> productArrayList = new ArrayList<Product>(products.size());
+                productArrayList.addAll(products);
 
-                listView.setAdapter(new ArrayAdapter<>(ProductListActivity.this, R.layout.simple_list_item, productTitles));
+                listView.setAdapter(new ProductsAdapter(ProductListActivity.this, productArrayList));
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
-                        optimizelyClient.track("home_category_click", getSampleApplication().getUser());
+                        optimizelyClient.track("product_click", getSampleApplication().getUser());
 
                         if (useProductDetailsActivity) {
                             launchProductDetailsActivity(products.get(position));

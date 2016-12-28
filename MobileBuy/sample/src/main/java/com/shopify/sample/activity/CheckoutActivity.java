@@ -107,13 +107,16 @@ public class CheckoutActivity extends SampleActivity {
         creditCard.setVerificationValue("123");
         creditCard.setNumber("4242424242424242");
 
+        final Checkout checkout = getSampleApplication().getCheckout();
+        OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
+        Double revenue = Double.parseDouble(checkout.getTotalPrice()) * 100;
+        optimizelyClient.track("complete_checkout", getSampleApplication().getUser(), revenue.longValue());
+
         showLoadingDialog(R.string.completing_checkout);
         getSampleApplication().storeCreditCard(creditCard, new Callback<PaymentToken>() {
             @Override
             public void success(PaymentToken paymentToken) {
                 onCreditCardStored();
-                OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
-                optimizelyClient.track("checkout", getSampleApplication().getUser());
             }
 
             @Override
