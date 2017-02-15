@@ -1,1 +1,2 @@
 include ':sample', ':buy'
+project(':android-sdk').projectDir = new File('android-sdk')
