@@ -86,6 +86,9 @@ dependencies {
 
 //    compile 'com.optimizely.ab:android-sdk:0.4.0'
     compile project(':android-sdk')
+    compile project(':event-handler')
+    compile project(':user-profile')
+    compile project(':shared')
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
