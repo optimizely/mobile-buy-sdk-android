@@ -40,7 +40,7 @@
     <string name="enter_gift_card_code">Enter Gift Card Code</string>
     <string name="discount_code">Discount Code</string>
     <string name="gift_card_code">Gift Card Code</string>
-    <string name="checkout">Checkout</string>
+    <string name="checkout">Check Out</string>
     <string name="discount_error">Could not apply discount code %s</string>
     <string name="gift_card_error">Could not apply gift card code %s</string>
 
