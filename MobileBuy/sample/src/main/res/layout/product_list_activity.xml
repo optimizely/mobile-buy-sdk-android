@@ -15,6 +15,7 @@
         <Switch
             android:id="@+id/product_details_activity_switch"
             style="@style/Switch"
+            android:contentDescription="product_view_toggle_cell"
             android:textOff="@string/no"
             android:textOn="@string/yes"/>
 
