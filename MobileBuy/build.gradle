@@ -14,7 +14,7 @@ buildscript {
         // in the individual module build.gradle files
     }
 
-    // keep this here to allow ENV vairables to be set.
+    // These variables will be set here so they do not need to be set as ENV variables
     rootProject.ext.bintray_user = ''
     rootProject.ext.bintray_api_key = ''
     rootProject.ext.version_name= ''
@@ -26,7 +26,7 @@ allprojects {
     }
 }
 
-// snapshot of dependencies to use
+// This allows the test app to control the versions of the dependencies that the android sdk is built with without needing to modify code in the android sdk repo itself.
 ext {
     compile_sdk_version = 24
     build_tools_version = "24.0.3"
