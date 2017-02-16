@@ -42,6 +42,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.optimizely.ab.android.sdk.OptimizelyClient;
+import com.optimizely.ab.config.Variation;
 import com.shopify.buy.customTabs.CustomTabActivityHelper;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientBuilder;
@@ -55,6 +57,7 @@ import com.shopify.buy.model.Shop;
 import com.shopify.buy.utils.CurrencyFormatter;
 import com.shopify.sample.BuildConfig;
 import com.shopify.sample.R;
+import com.shopify.sample.application.SampleApplication;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -88,6 +91,22 @@ public class ProductDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = (ProductDetailsFragmentView) inflater.inflate(R.layout.fragment_product_details, container, false);
+
+        SampleApplication app = (SampleApplication)getActivity().getApplication();
+        OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
+        String userId = app.getUser();
+        Variation ctaTextVariation = optimizelyClient.activate("product_cta", userId);
+
+        String ctaText = "Check Out";
+        if (ctaTextVariation.getKey().equals("get_it")) {
+            ctaText = "Get it";
+        } else if (ctaTextVariation.getKey().equals("buy_it")) {
+            ctaText = "Buy it";
+        }
+
+        Button checkoutButton = (Button)view.findViewById(R.id.checkout_button);
+        checkoutButton.setText(ctaText);
+
         return view;
     }
 

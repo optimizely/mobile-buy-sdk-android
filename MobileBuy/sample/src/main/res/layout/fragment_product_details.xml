@@ -104,7 +104,9 @@
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="@dimen/spacing_12dp"
                 android:paddingRight="@dimen/spacing_12dp"
+                android:textAllCaps="false"
                 android:text="@string/checkout"
+                android:contentDescription="button_checkout"
                 android:textSize="@dimen/text_small"/>
         </FrameLayout>
 

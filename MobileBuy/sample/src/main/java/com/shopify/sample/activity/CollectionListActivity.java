@@ -32,12 +32,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.optimizely.ab.android.sdk.OptimizelyClient;
 import com.optimizely.ab.android.sdk.OptimizelyStartListener;
-import com.optimizely.ab.config.Variation;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.sample.R;
@@ -49,8 +47,6 @@ import com.shopify.sample.customer.CustomerLoginActivity;
 import com.shopify.sample.customer.CustomerOrderListActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -83,19 +79,22 @@ public class CollectionListActivity extends SampleListActivity {
             String projectId = getIntent().getStringExtra("optlyProjectId");
             if (projectId == null) {
                 // INSERT PROJECT ID FOR LOCAL RUN
-                projectId = "8087040246";
+                projectId = "";
             }
 
             String userId = getIntent().getStringExtra("optlyUserId");
             if (userId == null) {
                 // INSERT USER ID FOR LOCAL RUN
-                userId = "e2e_test_user_variation_1";
+                userId = "";
             }
             getSampleApplication().initializeOptimizelyManager(projectId, userId);
 
-            getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
-                @Override
-                public void onStart(OptimizelyClient optimizely) {
+
+            String initializationMode = getIntent().getStringExtra("optlyInitMode");
+            if (initializationMode.equals("async")) {
+                getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
+                    @Override
+                    public void onStart(OptimizelyClient optimizely) {
                     if (optimizely.isValid()) {
                         Toast.makeText(CollectionListActivity.this, "Optimizely Started", Toast.LENGTH_SHORT).show();
 
@@ -117,8 +116,35 @@ public class CollectionListActivity extends SampleListActivity {
                     } else {
                         Toast.makeText(CollectionListActivity.this, "Optimizely Invalid", Toast.LENGTH_SHORT).show();
                     }
+                    }
+                });
+            } else {
+                if (initializationMode.equals("sync_datafile")) {
+                    // @TODO(mng): There is an issue with Appetize/Appium where we can't pass in the datafile through the test,
+                    // therefore we will compile it in for now and revisit once they fix that issue.
+                    // String compiledDatafile = getIntent().getStringExtra("optlyDatafile");
+                    String compiledDatafile = "{\"groups\": [], \"variables\": [], \"experiments\": [{\"status\": \"Running\", \"key\": \"product_sorting_logic\", \"layerId\": \"8089750552\", \"trafficAllocation\": [{\"entityId\": \"8095960396\", \"endOfRange\": 5000}, {\"entityId\": \"8094731902\", \"endOfRange\": 10000}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8095960396\", \"key\": \"sort_by_price\"}, {\"variables\": [], \"id\": \"8094731902\", \"key\": \"sort_by_name\"}], \"forcedVariations\": {\"e2e_test_user_variation_2\": \"sort_by_name\", \"e2e_test_user_variation_1\": \"sort_by_price\"}, \"id\": \"8096020192\"}, {\"status\": \"Running\", \"key\": \"product_cta\", \"layerId\": \"8224521262\", \"trafficAllocation\": [{\"entityId\": \"8221073372\", \"endOfRange\": 5000}, {\"entityId\": \"8221994870\", \"endOfRange\": 10000}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8221073372\", \"key\": \"get_it\"}, {\"variables\": [], \"id\": \"8221994870\", \"key\": \"buy_it\"}], \"forcedVariations\": {}, \"id\": \"8227341368\"}], \"audiences\": [], \"anonymizeIP\": true, \"accountId\": \"6384711706\", \"projectId\": \"8087040246\", \"version\": \"3\", \"attributes\": [{\"id\": \"8239264589\", \"key\": \"should_use_new_pipeline\"}, {\"id\": \"8240311689\", \"key\": \"project_size\"}], \"events\": [{\"experimentIds\": [\"8096020192\"], \"id\": \"8090781632\", \"key\": \"product_click\"}, {\"experimentIds\": [\"8096020192\"], \"id\": \"8091730243\", \"key\": \"complete_checkout\"}, {\"experimentIds\": [\"8227341368\"], \"id\": \"8227392987\", \"key\": \"start_checkout\"}], \"revision\": \"15\"}";
+                    getSampleApplication().getOptimizelyManager().initialize(this, compiledDatafile);
+                } else if (initializationMode.equals("sync_no_datafile")) {
+                    getSampleApplication().getOptimizelyManager().initialize(this, "");
                 }
-            });
+                // Fetch the collections
+                getSampleApplication().getCollections(new Callback<List<Collection>>() {
+                    @Override
+                    public void success(List<Collection> collections) {
+                        isFetching = false;
+                        dismissLoadingDialog();
+                        onFetchedCollections(collections);
+                    }
+
+                    @Override
+                    public void failure(BuyClientError error) {
+                        isFetching = false;
+                        onError(error);
+                    }
+                });
+            }
+
         }
 
         invalidateOptionsMenu();
