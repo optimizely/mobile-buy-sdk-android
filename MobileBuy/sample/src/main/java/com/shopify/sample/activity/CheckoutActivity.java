@@ -56,12 +56,14 @@ public class CheckoutActivity extends SampleActivity {
         setTitle(R.string.checkout);
 
         OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
-        Variation product_sorting_variation = optimizelyClient.getVariation("checkout_activity_layout",
+        Variation product_sorting_variation = optimizelyClient.getVariation("checkout_cta",
                 getSampleApplication().getUser());
-        if (product_sorting_variation.getKey().equals("include_fake_text")) {
-            setContentView(R.layout.checkout_activity);
-        } else if (product_sorting_variation.getKey().equals("exclude_fake_text")){
-            setContentView(R.layout.checkout_activity_variation);
+        if (product_sorting_variation != null) {
+            if (product_sorting_variation.getKey().equals("include_fake_text")) {
+                setContentView(R.layout.checkout_activity);
+            } else if (product_sorting_variation.getKey().equals("exclude_fake_text")) {
+                setContentView(R.layout.checkout_activity_variation);
+            }
         }
 
         final boolean didCreateCheckout = !TextUtils.isEmpty(getSampleApplication().getCheckout().getToken());
