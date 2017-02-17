@@ -91,7 +91,7 @@ public class CollectionListActivity extends SampleListActivity {
 
 
             String initializationMode = getIntent().getStringExtra("optlyInitMode");
-            if (initializationMode.equals("async")) {
+            if (initializationMode == null || initializationMode.equals("async")) {
                 getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
                     @Override
                     public void onStart(OptimizelyClient optimizely) {

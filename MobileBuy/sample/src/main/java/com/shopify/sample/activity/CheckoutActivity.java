@@ -32,6 +32,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.optimizely.ab.android.sdk.OptimizelyClient;
+import com.optimizely.ab.config.Variation;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
 import com.shopify.buy.model.Checkout;
@@ -53,7 +54,15 @@ public class CheckoutActivity extends SampleActivity {
         super.onCreate(savedInstanceState);
 
         setTitle(R.string.checkout);
-        setContentView(R.layout.checkout_activity);
+
+        OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
+        Variation product_sorting_variation = optimizelyClient.getVariation("checkout_activity_layout",
+                getSampleApplication().getUser());
+        if (product_sorting_variation.getKey().equals("include_fake_text")) {
+            setContentView(R.layout.checkout_activity);
+        } else if (product_sorting_variation.getKey().equals("exclude_fake_text")){
+            setContentView(R.layout.checkout_activity_variation);
+        }
 
         final boolean didCreateCheckout = !TextUtils.isEmpty(getSampleApplication().getCheckout().getToken());
 
