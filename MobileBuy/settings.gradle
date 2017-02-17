@@ -1,1 +1,5 @@
-include ':sample', ':buy'
+include ':sample', ':buy', ':android-sdk', ':event-handler', ':user-profile', ':shared'
+project(':android-sdk').projectDir = new File('../../android-sdk/android-sdk')
+project(':event-handler').projectDir = new File('../../android-sdk/event-handler')
+project(':user-profile').projectDir = new File('../../android-sdk/user-profile')
+project(':shared').projectDir = new File('../../android-sdk/shared')

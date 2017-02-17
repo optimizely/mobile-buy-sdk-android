@@ -84,7 +84,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:palette-v7:24.0.0'
 
-    compile 'com.optimizely.ab:android-sdk:1.0.0'
+//    compile 'com.optimizely.ab:android-sdk:1.0.0'
+    compile project(':android-sdk')
+    compile project(':event-handler')
+    compile project(':user-profile')
+    compile project(':shared')
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
