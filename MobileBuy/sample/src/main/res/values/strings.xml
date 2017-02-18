@@ -45,6 +45,7 @@
     <string name="gift_card_error">Could not apply gift card code %s</string>
 
     <string name="native_checkout">Checkout with Fake Credit Card</string>
+    <string name="native_checkout_variation">Checkout with Credit Card</string>
     <string name="web_checkout">Web Checkout</string>
     <string name="cart_permalink">Cart Permalink</string>
     <string name="completing_checkout">Completing checkout...</string>

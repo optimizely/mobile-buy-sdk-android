@@ -128,20 +128,22 @@ public class ProductListActivity extends SampleListActivity {
                 public void success(List<Product> products) {
                     OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
                     Variation product_sorting_variation = optimizelyClient.activate("product_sorting_logic", getSampleApplication().getUser());
-                    if (product_sorting_variation.getKey().equals("sort_by_price")) {
-                        Collections.sort(products, new Comparator<Product>() {
-                            @Override
-                            public int compare(Product product, Product t1) {
-                                return product.getMinimumPrice().compareTo(t1.getMinimumPrice());
-                            }
-                        });
-                    } else if (product_sorting_variation.getKey().equals("sort_by_name")){
-                        Collections.sort(products, new Comparator<Product>() {
-                            @Override
-                            public int compare(Product product, Product t1) {
-                                return product.getTitle().compareToIgnoreCase(t1.getTitle());
-                            }
-                        });
+                    if (product_sorting_variation != null) {
+                        if (product_sorting_variation.getKey().equals("sort_by_price")) {
+                            Collections.sort(products, new Comparator<Product>() {
+                                @Override
+                                public int compare(Product product, Product t1) {
+                                    return product.getMinimumPrice().compareTo(t1.getMinimumPrice());
+                                }
+                            });
+                        } else if (product_sorting_variation.getKey().equals("sort_by_name")) {
+                            Collections.sort(products, new Comparator<Product>() {
+                                @Override
+                                public int compare(Product product, Product t1) {
+                                    return product.getTitle().compareToIgnoreCase(t1.getTitle());
+                                }
+                            });
+                        }
                     }
 
                     isFetching = false;
