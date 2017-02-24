@@ -109,10 +109,10 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
 
         Button checkoutButton = (Button) findViewById(R.id.checkout_button);
 
-        OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
-        String userId = app.getUser();
+        final OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
+        final String userId = app.getUser();
         String cartCTAExperimentKey = app.getOptimizelyCTAExperimentKey();
-        Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
+        final Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
 
         Variation ctaTextVariation = optimizelyClient.activate(cartCTAExperimentKey, userId, userAttributes);
 
@@ -127,6 +127,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                optimizelyClient.track("pre_checkout_cta_clicked", userId, userAttributes);
                 onCheckoutButtonClicked();
             }
         });
