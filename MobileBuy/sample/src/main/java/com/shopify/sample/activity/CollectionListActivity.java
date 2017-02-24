@@ -34,6 +34,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.optimizely.ab.android.sdk.OptimizelyClient;
 import com.optimizely.ab.android.sdk.OptimizelyStartListener;
 import com.shopify.buy.dataprovider.BuyClientError;
@@ -47,6 +48,7 @@ import com.shopify.sample.customer.CustomerLoginActivity;
 import com.shopify.sample.customer.CustomerOrderListActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -89,6 +91,16 @@ public class CollectionListActivity extends SampleListActivity {
             }
             getSampleApplication().initializeOptimizelyManager(projectId, userId);
 
+            String cartCTAExperimentKey = getIntent().getStringExtra("optlyCartCtaExperimentKey");
+            String userAttributesString = getIntent().getStringExtra("optlyUserAttributes");
+            HashMap<String, String> userAttributes = new HashMap<>();
+            if (userAttributesString != null) {
+                Gson gson = new Gson();
+                userAttributes = (HashMap<String, String>) gson.fromJson(userAttributesString, userAttributes.getClass());
+            }
+
+            getSampleApplication().setOptimizelyCTAExperimentKey(cartCTAExperimentKey);
+            getSampleApplication().setOptimizelyUserAttributes(userAttributes);
 
             String initializationMode = getIntent().getStringExtra("optlyInitMode");
             if (initializationMode == null || initializationMode.equals("async")) {

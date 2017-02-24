@@ -24,7 +24,7 @@
 
 package com.shopify.sample.activity;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -52,7 +52,6 @@ import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.android.gms.wallet.fragment.WalletFragmentStyle;
-import com.google.gson.Gson;
 import com.optimizely.ab.android.sdk.OptimizelyClient;
 import com.optimizely.ab.config.Variation;
 import com.shopify.buy.dataprovider.BuyClient;
@@ -112,13 +111,8 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
 
         OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
         String userId = app.getUser();
-        String cartCTAExperimentKey = getIntent().getStringExtra("optlyCartCtaExperimentKey");
-        String userAttributesString = getIntent().getStringExtra("optlyUserAttributes");
-        HashMap<String, String> userAttributes = new HashMap<>();
-        if (userAttributesString != null) {
-            Gson gson = new Gson();
-            userAttributes = (HashMap<String, String>) gson.fromJson(userAttributesString, userAttributes.getClass());
-        }
+        String cartCTAExperimentKey = app.getOptimizelyCTAExperimentKey();
+        Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
 
         Variation ctaTextVariation = optimizelyClient.activate(cartCTAExperimentKey, userId, userAttributes);
 

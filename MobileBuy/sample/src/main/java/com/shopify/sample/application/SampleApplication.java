@@ -56,6 +56,7 @@ import com.shopify.sample.R;
 import com.shopify.sample.ui.ProductDetailsBuilder;
 import com.shopify.sample.ui.ProductDetailsTheme;
 
+import java.util.Map;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -79,6 +80,10 @@ public class SampleApplication extends Application {
 
     private static String optimizelyUserId;
 
+    private static Map<String, String> optimizelyUserAttributes;
+
+    private static String optimizelyCTAExperimentKey;
+
     public static BuyClient getBuyClient() {
         return instance.buyClient;
     }
@@ -93,6 +98,22 @@ public class SampleApplication extends Application {
 
     public static void setCustomer(Customer customer) {
         SampleApplication.customer = customer;
+    }
+
+    public static String getOptimizelyCTAExperimentKey() {
+        return optimizelyCTAExperimentKey;
+    }
+
+    public static void setOptimizelyCTAExperimentKey(String optimizelyCTAExperimentKey) {
+        SampleApplication.optimizelyCTAExperimentKey = optimizelyCTAExperimentKey;
+    }
+
+    public static Map<String, String> getOptimizelyUserAttributes() {
+        return optimizelyUserAttributes;
+    }
+
+    public static void setOptimizelyUserAttributes(Map<String, String> optimizelyUserAttributes) {
+        SampleApplication.optimizelyUserAttributes = optimizelyUserAttributes;
     }
 
     private BuyClient buyClient;
