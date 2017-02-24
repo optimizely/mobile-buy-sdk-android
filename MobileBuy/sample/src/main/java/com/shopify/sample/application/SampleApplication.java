@@ -83,6 +83,7 @@ public class SampleApplication extends Application {
     private static Map<String, String> optimizelyUserAttributes;
 
     private static String optimizelyCartCTAExperimentKey;
+    private static String optimizelyCheckoutCTAExperimentKey;
 
     public static BuyClient getBuyClient() {
         return instance.buyClient;
@@ -106,6 +107,14 @@ public class SampleApplication extends Application {
 
     public static void setOptimizelyCartCTAExperimentKey(String optimizelyCartCTAExperimentKey) {
         SampleApplication.optimizelyCartCTAExperimentKey = optimizelyCartCTAExperimentKey;
+    }
+
+    public static String getOptimizelyCheckoutCTAExperimentKey() {
+        return optimizelyCheckoutCTAExperimentKey;
+    }
+
+    public static void setOptimizelyCheckoutCTAExperimentKey(String optimizelyCheckoutCTAExperimentKey) {
+        SampleApplication.optimizelyCheckoutCTAExperimentKey = optimizelyCheckoutCTAExperimentKey;
     }
 
     public static Map<String, String> getOptimizelyUserAttributes() {

@@ -92,6 +92,7 @@ public class CollectionListActivity extends SampleListActivity {
             getSampleApplication().initializeOptimizelyManager(projectId, userId);
 
             String cartCTAExperimentKey = getIntent().getStringExtra("optlyCartCtaExperimentKey");
+            String checkoutCTAExperimentKey = getIntent().getStringExtra("optlyCheckoutCtaExperimentKey");
             String userAttributesString = getIntent().getStringExtra("optlyUserAttributes");
             HashMap<String, String> userAttributes = new HashMap<>();
             if (userAttributesString != null) {
@@ -100,6 +101,7 @@ public class CollectionListActivity extends SampleListActivity {
             }
 
             getSampleApplication().setOptimizelyCartCTAExperimentKey(cartCTAExperimentKey);
+            getSampleApplication().setOptimizelyCheckoutCTAExperimentKey(checkoutCTAExperimentKey);
             getSampleApplication().setOptimizelyUserAttributes(userAttributes);
 
             String initializationMode = getIntent().getStringExtra("optlyInitMode");
