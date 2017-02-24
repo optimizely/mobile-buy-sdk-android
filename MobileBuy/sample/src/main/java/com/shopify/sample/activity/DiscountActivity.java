@@ -72,7 +72,7 @@ import com.shopify.sample.application.SampleApplication;
  */
 public class DiscountActivity extends SampleActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String LOG_TAG = CheckoutActivity.class.getSimpleName();
+    private static final String LOG_TAG = DiscountActivity.class.getSimpleName();
 
     private GoogleApiClient googleApiClient;
 
@@ -114,14 +114,17 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         String cartCTAExperimentKey = app.getOptimizelyCTAExperimentKey();
         final Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
 
-        Variation ctaTextVariation = optimizelyClient.activate(cartCTAExperimentKey, userId, userAttributes);
-
-        if (ctaTextVariation != null) {
-            if (ctaTextVariation.getKey().equals("checkout_now")) {
-                checkoutButton.setText(R.string.checkout_now);
-            } else if (ctaTextVariation.getKey().equals("do_it")) {
-                checkoutButton.setText(R.string.checkout_do_it);
+        if (cartCTAExperimentKey != null) {
+            Variation ctaTextVariation = optimizelyClient.activate(cartCTAExperimentKey, userId, userAttributes);
+            if (ctaTextVariation != null) {
+                if (ctaTextVariation.getKey().equals("checkout_now")) {
+                    checkoutButton.setText(R.string.checkout_now);
+                } else if (ctaTextVariation.getKey().equals("do_it")) {
+                    checkoutButton.setText(R.string.checkout_do_it);
+                }
             }
+        } else {
+            Log.i(LOG_TAG, "Skipping OptimizelyClient.activate() because cartCTAExperimentKey is null.");
         }
 
         checkoutButton.setOnClickListener(new View.OnClickListener() {
