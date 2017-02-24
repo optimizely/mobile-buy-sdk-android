@@ -44,3 +44,5 @@ sample/bin
 sample/target
 sample/gen
 sample/build
+
+sample/shop.properties
