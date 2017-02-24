@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -40,6 +41,9 @@ import com.shopify.buy.model.CreditCard;
 import com.shopify.buy.model.PaymentToken;
 import com.shopify.sample.R;
 import com.shopify.sample.activity.base.SampleActivity;
+import com.shopify.sample.application.SampleApplication;
+
+import java.util.Map;
 
 
 /**
@@ -49,24 +53,36 @@ import com.shopify.sample.activity.base.SampleActivity;
  */
 public class CheckoutActivity extends SampleActivity {
 
+    private static final String LOG_TAG = CheckoutActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTitle(R.string.checkout);
+        SampleApplication app = getSampleApplication();
 
-        OptimizelyClient optimizelyClient = getSampleApplication().getOptimizelyManager().getOptimizely();
-        Variation product_sorting_variation = optimizelyClient.getVariation("checkout_cta",
-                getSampleApplication().getUser());
-        if (product_sorting_variation != null) {
-            if (product_sorting_variation.getKey().equals("include_fake_text")) {
-                setContentView(R.layout.checkout_activity);
-            } else if (product_sorting_variation.getKey().equals("exclude_fake_text")) {
-                setContentView(R.layout.checkout_activity_variation);
+        setTitle(R.string.checkout);
+        setContentView(R.layout.checkout_activity);
+
+        OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
+        String userId = app.getUser();
+        String checkoutCTAExperimentKey = app.getOptimizelyCheckoutCTAExperimentKey();
+        Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
+
+        if (checkoutCTAExperimentKey != null) {
+            Variation variation = optimizelyClient.getVariation(checkoutCTAExperimentKey, userId, userAttributes);
+            if (variation != null) {
+                if (variation.getKey().equals("include_fake_text")) {
+                    // correct layout already set
+                } else if (variation.getKey().equals("exclude_fake_text")) {
+                    setContentView(R.layout.checkout_activity_variation);
+                }
             }
+        } else {
+            Log.i(LOG_TAG, "Skipping OptimizelyClient.getVariation() because checkoutCTAExperimentKey is null.");
         }
 
-        final boolean didCreateCheckout = !TextUtils.isEmpty(getSampleApplication().getCheckout().getToken());
+        final boolean didCreateCheckout = !TextUtils.isEmpty(app.getCheckout().getToken());
 
         Button nativeCheckoutButton = (Button) findViewById(R.id.native_checkout_button);
         if (didCreateCheckout) {
