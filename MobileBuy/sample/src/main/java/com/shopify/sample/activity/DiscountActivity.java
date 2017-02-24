@@ -24,6 +24,8 @@
 
 package com.shopify.sample.activity;
 
+import java.util.Map;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -50,6 +52,8 @@ import com.google.android.gms.wallet.fragment.WalletFragmentInitParams;
 import com.google.android.gms.wallet.fragment.WalletFragmentMode;
 import com.google.android.gms.wallet.fragment.WalletFragmentOptions;
 import com.google.android.gms.wallet.fragment.WalletFragmentStyle;
+import com.optimizely.ab.android.sdk.OptimizelyClient;
+import com.optimizely.ab.config.Variation;
 import com.shopify.buy.dataprovider.BuyClient;
 import com.shopify.buy.dataprovider.BuyClientError;
 import com.shopify.buy.dataprovider.Callback;
@@ -82,6 +86,8 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SampleApplication app = getSampleApplication();
+
         setTitle(R.string.apply_discounts);
         setContentView(R.layout.discount_activity);
 
@@ -102,6 +108,22 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         });
 
         Button checkoutButton = (Button) findViewById(R.id.checkout_button);
+
+        OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
+        String userId = app.getUser();
+        String cartCTAExperimentKey = app.getOptimizelyCTAExperimentKey();
+        Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
+
+        Variation ctaTextVariation = optimizelyClient.activate(cartCTAExperimentKey, userId, userAttributes);
+
+        if (ctaTextVariation != null) {
+            if (ctaTextVariation.getKey().equals("checkout_now")) {
+                checkoutButton.setText(R.string.checkout_now);
+            } else if (ctaTextVariation.getKey().equals("do_it")) {
+                checkoutButton.setText(R.string.checkout_do_it);
+            }
+        }
+
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +131,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
             }
         });
 
-        buyClient = getSampleApplication().getBuyClient();
+        buyClient = app.getBuyClient();
 
         updateOrderSummary();
 

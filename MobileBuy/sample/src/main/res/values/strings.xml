@@ -43,6 +43,9 @@
     <string name="checkout">Check Out</string>
     <string name="discount_error">Could not apply discount code %s</string>
     <string name="gift_card_error">Could not apply gift card code %s</string>
+    <string name="checkout_now">Checkout Now</string>
+    <string name="checkout_do_it">Do It</string>
+    <string name="checkout_continue">Continue</string>
 
     <string name="native_checkout">Checkout with Fake Credit Card</string>
     <string name="native_checkout_variation">Checkout with Credit Card</string>

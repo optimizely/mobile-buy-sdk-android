@@ -51,7 +51,7 @@
             android:id="@+id/checkout_button"
             style="@style/Button"
             android:contentDescription="button_checkout_continue"
-            android:text="@string/checkout"/>
+            android:text="@string/checkout_continue"/>
     </FrameLayout>
 
 </LinearLayout>
