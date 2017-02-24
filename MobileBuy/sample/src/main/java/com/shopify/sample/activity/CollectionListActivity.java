@@ -99,7 +99,7 @@ public class CollectionListActivity extends SampleListActivity {
                 userAttributes = (HashMap<String, String>) gson.fromJson(userAttributesString, userAttributes.getClass());
             }
 
-            getSampleApplication().setOptimizelyCTAExperimentKey(cartCTAExperimentKey);
+            getSampleApplication().setOptimizelyCartCTAExperimentKey(cartCTAExperimentKey);
             getSampleApplication().setOptimizelyUserAttributes(userAttributes);
 
             String initializationMode = getIntent().getStringExtra("optlyInitMode");
