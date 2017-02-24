@@ -111,7 +111,7 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
 
         final OptimizelyClient optimizelyClient = app.getOptimizelyManager().getOptimizely();
         final String userId = app.getUser();
-        String cartCTAExperimentKey = app.getOptimizelyCTAExperimentKey();
+        String cartCTAExperimentKey = app.getOptimizelyCartCTAExperimentKey();
         final Map<String, String> userAttributes = app.getOptimizelyUserAttributes();
 
         if (cartCTAExperimentKey != null) {
