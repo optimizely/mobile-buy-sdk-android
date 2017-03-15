@@ -91,6 +91,7 @@ public class CollectionListActivity extends SampleListActivity {
             }
             getSampleApplication().initializeOptimizelyManager(projectId, userId);
 
+            String cartCTAEventKey = getIntent().getStringExtra("optlyCartCtaEventKey");
             String cartCTAExperimentKey = getIntent().getStringExtra("optlyCartCtaExperimentKey");
             String checkoutCTAExperimentKey = getIntent().getStringExtra("optlyCheckoutCtaExperimentKey");
             String userAttributesString = getIntent().getStringExtra("optlyUserAttributes");
@@ -100,6 +101,7 @@ public class CollectionListActivity extends SampleListActivity {
                 userAttributes = (HashMap<String, String>) gson.fromJson(userAttributesString, userAttributes.getClass());
             }
 
+            getSampleApplication().setOptimizelyCartCTAEventKey(cartCTAEventKey);
             getSampleApplication().setOptimizelyCartCTAExperimentKey(cartCTAExperimentKey);
             getSampleApplication().setOptimizelyCheckoutCTAExperimentKey(checkoutCTAExperimentKey);
             getSampleApplication().setOptimizelyUserAttributes(userAttributes);

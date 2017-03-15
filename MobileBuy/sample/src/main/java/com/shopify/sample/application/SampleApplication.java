@@ -82,6 +82,7 @@ public class SampleApplication extends Application {
 
     private static Map<String, String> optimizelyUserAttributes;
 
+    private static String optimizelyCartCTAEventKey;
     private static String optimizelyCartCTAExperimentKey;
     private static String optimizelyCheckoutCTAExperimentKey;
 
@@ -99,6 +100,14 @@ public class SampleApplication extends Application {
 
     public static void setCustomer(Customer customer) {
         SampleApplication.customer = customer;
+    }
+
+    public static void setOptimizelyCartCTAEventKey(String optimizelyCartCTAEventKey) {
+        SampleApplication.optimizelyCartCTAEventKey = optimizelyCartCTAEventKey;
+    }
+
+    public static String getOptimizelyCartCTAEventKey() {
+        return optimizelyCartCTAEventKey;
     }
 
     public static String getOptimizelyCartCTAExperimentKey() {
