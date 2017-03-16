@@ -130,7 +130,8 @@ public class DiscountActivity extends SampleActivity implements GoogleApiClient.
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                optimizelyClient.track("pre_checkout_cta_clicked", userId, userAttributes);
+                String cartCTAEventKey = SampleApplication.getOptimizelyCartCTAEventKey();
+                optimizelyClient.track(cartCTAEventKey, userId, userAttributes);
                 onCheckoutButtonClicked();
             }
         });
