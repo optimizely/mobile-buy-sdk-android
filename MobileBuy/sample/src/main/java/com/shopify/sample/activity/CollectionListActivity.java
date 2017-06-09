@@ -152,7 +152,12 @@ public class CollectionListActivity extends SampleListActivity {
 
                     // Activate asynchronously with a CDN Datafile
                     // Different datafile should not change the bucketed value
-                    getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener();
+                    getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
+                        @Override
+                        public void onStart(OptimizelyClient optimizely) {
+                            // nothing
+                        }
+                    });
                 }
                 // Fetch the collections
                 getSampleApplication().getCollections(new Callback<List<Collection>>() {
