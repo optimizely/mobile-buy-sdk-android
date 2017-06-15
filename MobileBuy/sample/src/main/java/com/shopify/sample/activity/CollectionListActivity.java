@@ -135,14 +135,29 @@ public class CollectionListActivity extends SampleListActivity {
                     }
                 });
             } else {
+                // @TODO(mng): There is an issue with Appetize/Appium where we can't pass in the datafile through the test,
+                // therefore we will compile it in for now and revisit once they fix that issue.
+                // String compiledDatafile = getIntent().getStringExtra("optlyDatafile");
+                String compiledDatafile = "{\"groups\": [], \"variables\": [], \"experiments\": [{\"status\": \"Running\", \"key\": \"product_sorting_logic\", \"layerId\": \"8089750552\", \"trafficAllocation\": [{\"entityId\": \"8095960396\", \"endOfRange\": 5000}, {\"entityId\": \"8094731902\", \"endOfRange\": 10000}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8095960396\", \"key\": \"sort_by_price\"}, {\"variables\": [], \"id\": \"8094731902\", \"key\": \"sort_by_name\"}], \"forcedVariations\": {\"e2e_test_user_variation_2\": \"sort_by_name\", \"e2e_test_user_variation_1\": \"sort_by_price\"}, \"id\": \"8096020192\"}, {\"status\": \"Running\",\"key\": \"checkout_cta_no_audience\",\"layerId\": \"8237931156\",\"trafficAllocation\": [{\"entityId\": \"8238227470\", \"endOfRange\": 10000}, {\"entityId\": \"8235478974\", \"endOfRange\": 0}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8238227470\", \"key\": \"include_fake_text\"}, {\"variables\": [], \"id\": \"8235478974\", \"key\": \"exclude_fake_text\"}], \"forcedVariations\": {}, \"id\": \"8234092446\"}, {\"status\": \"Running\", \"key\": \"product_cta\", \"layerId\": \"8224521262\", \"trafficAllocation\": [{\"entityId\": \"8221073372\", \"endOfRange\": 5000}, {\"entityId\": \"8221994870\", \"endOfRange\": 10000}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8221073372\", \"key\": \"get_it\"}, {\"variables\": [], \"id\": \"8221994870\", \"key\": \"buy_it\"}], \"forcedVariations\": {}, \"id\": \"8227341368\"}], \"audiences\": [], \"anonymizeIP\": true, \"accountId\": \"6384711706\", \"projectId\": \"8087040246\", \"version\": \"3\", \"attributes\": [{\"id\": \"8239264589\", \"key\": \"should_use_new_pipeline\"}, {\"id\": \"8240311689\", \"key\": \"project_size\"}], \"events\": [{\"experimentIds\": [\"8096020192\"], \"id\": \"8090781632\", \"key\": \"product_click\"}, {\"experimentIds\": [\"8096020192\"], \"id\": \"8091730243\", \"key\": \"complete_checkout\"}, {\"experimentIds\": [\"8227341368\"], \"id\": \"8227392987\", \"key\": \"start_checkout\"}], \"revision\": \"15\"}";
+
                 if (initializationMode.equals("sync_datafile")) {
-                    // @TODO(mng): There is an issue with Appetize/Appium where we can't pass in the datafile through the test,
-                    // therefore we will compile it in for now and revisit once they fix that issue.
-                    // String compiledDatafile = getIntent().getStringExtra("optlyDatafile");
-                    String compiledDatafile = "{\"groups\": [], \"variables\": [], \"experiments\": [{\"status\": \"Running\", \"key\": \"product_sorting_logic\", \"layerId\": \"8089750552\", \"trafficAllocation\": [{\"entityId\": \"8095960396\", \"endOfRange\": 5000}, {\"entityId\": \"8094731902\", \"endOfRange\": 10000}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8095960396\", \"key\": \"sort_by_price\"}, {\"variables\": [], \"id\": \"8094731902\", \"key\": \"sort_by_name\"}], \"forcedVariations\": {\"e2e_test_user_variation_2\": \"sort_by_name\", \"e2e_test_user_variation_1\": \"sort_by_price\"}, \"id\": \"8096020192\"}, {\"status\": \"Running\", \"key\": \"product_cta\", \"layerId\": \"8224521262\", \"trafficAllocation\": [{\"entityId\": \"8221073372\", \"endOfRange\": 5000}, {\"entityId\": \"8221994870\", \"endOfRange\": 10000}], \"audienceIds\": [], \"variations\": [{\"variables\": [], \"id\": \"8221073372\", \"key\": \"get_it\"}, {\"variables\": [], \"id\": \"8221994870\", \"key\": \"buy_it\"}], \"forcedVariations\": {}, \"id\": \"8227341368\"}], \"audiences\": [], \"anonymizeIP\": true, \"accountId\": \"6384711706\", \"projectId\": \"8087040246\", \"version\": \"3\", \"attributes\": [{\"id\": \"8239264589\", \"key\": \"should_use_new_pipeline\"}, {\"id\": \"8240311689\", \"key\": \"project_size\"}], \"events\": [{\"experimentIds\": [\"8096020192\"], \"id\": \"8090781632\", \"key\": \"product_click\"}, {\"experimentIds\": [\"8096020192\"], \"id\": \"8091730243\", \"key\": \"complete_checkout\"}, {\"experimentIds\": [\"8227341368\"], \"id\": \"8227392987\", \"key\": \"start_checkout\"}], \"revision\": \"15\"}";
                     getSampleApplication().getOptimizelyManager().initialize(this, compiledDatafile);
                 } else if (initializationMode.equals("sync_no_datafile")) {
                     getSampleApplication().getOptimizelyManager().initialize(this, "");
+                } else if (initializationMode.equals("sync_async_datafile")) {
+
+                    // Activate synchronously with a given datafile
+                    // The user profile should persist the variation in the saved datafile (include_fake_text)
+                    getSampleApplication().getOptimizelyManager().initialize(this, compiledDatafile);
+
+                    // Activate asynchronously with a CDN Datafile
+                    // Different datafile should not change the bucketed value
+                    getSampleApplication().getOptimizelyManager().initialize(this, new OptimizelyStartListener() {
+                        @Override
+                        public void onStart(OptimizelyClient optimizely) {
+                            // nothing
+                        }
+                    });
                 }
                 // Fetch the collections
                 getSampleApplication().getCollections(new Callback<List<Collection>>() {
