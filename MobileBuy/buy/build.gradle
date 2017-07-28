@@ -51,7 +51,7 @@ ext {
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
     com.android.ddmlib.DdmPreferences.setTimeOut(60000) // https://code.google.com/p/android/issues/detail?id=104305
 
     defaultConfig {

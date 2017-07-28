@@ -203,7 +203,7 @@ public class SampleApplication extends Application {
     public void initializeOptimizelyManager(String projectId, String userId) {
         optimizelyUserId = userId;
         optimizelyManager = OptimizelyManager.builder(projectId)
-                                             .build();
+                                             .build(getApplicationContext());
     }
 
     public void getCollections(final Callback<List<Collection>> callback) {
